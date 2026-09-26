@@ -87,7 +87,6 @@ scripts/                   генераторы database.sql и ER_Diagram.pdf
 tests/                     модульные тесты и UI smoke-тесты
 database.sql               готовая структура PostgreSQL с данными
 ER_Diagram.pdf             ER-диаграмма нормализованной базы
-TASK2_COMPLIANCE.md        итоговая таблица соответствия требованиям
 ```
 папку components, services и forms убрать, а файлы с них отправить в логику папки frames.
 storage убрать папку и оставить только файл с неё для работы сессий.
@@ -103,15 +102,9 @@ storage убрать папку и оставить только файл с н�
 
 ## Проверка
 
-```powershell
-python -m unittest discover -s tests -v
-python -m compileall -q .
-```
-
 Для проверки входных Excel-файлов без подключения к PostgreSQL:
 
 ```powershell
 python -m database.import_data
 ```
 
-Подробный аудит требований находится в `TASK2_COMPLIANCE.md`.
