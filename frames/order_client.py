@@ -3,8 +3,8 @@ from __future__ import annotations
 from PySide6.QtWidgets import QComboBox, QFrame, QLabel, QPushButton, QVBoxLayout
 
 import messages
-from components import HeaderWidget, create_page_title
 from database import DatabaseError
+from frames.common import HeaderWidget, create_page_title
 
 
 class OrderClientFrame(QFrame):

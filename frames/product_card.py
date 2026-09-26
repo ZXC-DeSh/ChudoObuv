@@ -5,7 +5,7 @@ from decimal import Decimal
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QVBoxLayout
 
-from components.common import load_product_pixmap
+from frames.common import load_product_pixmap
 
 
 def format_money(value) -> str:

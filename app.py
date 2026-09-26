@@ -10,16 +10,14 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QStackedWidget
 
 import messages
 from database import DatabaseConnection
-from frames import (
-    CartFrame,
-    CatalogFrame,
-    LoginFrame,
-    OrderClientFrame,
-    OrderDetailFrame,
-    OrdersFrame,
-    ProductDetailFrame,
-)
-from storage import AppSession
+from frames.cart import CartFrame
+from frames.catalog import CatalogFrame
+from frames.login import LoginFrame
+from frames.order_client import OrderClientFrame
+from frames.order_detail import OrderDetailFrame
+from frames.orders import OrdersFrame
+from frames.product_detail import ProductDetailFrame
+from session import AppSession
 from styles import STYLE_SHEET
 
 
@@ -142,7 +140,7 @@ def create_application(argv=None) -> QApplication:
                 QFontDatabase.addApplicationFont(str(font_path))
     application.setFont(QFont("Calibri", 11))
     application.setStyleSheet(STYLE_SHEET)
-    icon_path = PROJECT_ROOT / "resources" / "app.ico"
+    icon_path = PROJECT_ROOT / "database" / "resources" / "app.ico"
     if icon_path.is_file():
         application.setWindowIcon(QIcon(str(icon_path)))
     return application

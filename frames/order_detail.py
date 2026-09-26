@@ -4,10 +4,10 @@ from PySide6.QtCore import QDate
 from PySide6.QtWidgets import QDateEdit, QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout
 
 import messages
-from components import HeaderWidget, create_page_title
-from components.product_card import format_money
 from database import DatabaseError, OrderValidationError
-from forms import OrderItemsTable
+from frames.common import HeaderWidget, create_page_title
+from frames.order_items_table import OrderItemsTable
+from frames.product_card import format_money
 
 
 class OrderDetailFrame(QFrame):

@@ -8,7 +8,7 @@ from PySide6.QtWidgets import QHBoxLayout, QLabel, QPushButton, QWidget
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-RESOURCES_DIR = PROJECT_ROOT / "resources"
+RESOURCES_DIR = PROJECT_ROOT / "database" / "resources"
 PRODUCT_IMAGES_DIR = RESOURCES_DIR / "images"
 
 

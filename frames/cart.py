@@ -5,10 +5,10 @@ from datetime import date
 from PySide6.QtWidgets import QFrame, QHBoxLayout, QLabel, QPushButton, QVBoxLayout
 
 import messages
-from components import HeaderWidget, create_page_title
-from components.product_card import format_money
 from database import DatabaseError, OrderValidationError
-from forms import DraftItemsTable
+from frames.common import HeaderWidget, create_page_title
+from frames.order_items_table import DraftItemsTable
+from frames.product_card import format_money
 
 
 class CartFrame(QFrame):

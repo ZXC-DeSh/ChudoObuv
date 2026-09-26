@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
+    QAbstractSpinBox,
     QComboBox,
     QFrame,
     QGridLayout,
@@ -17,10 +18,10 @@ from PySide6.QtWidgets import (
 )
 
 import messages
-from components import HeaderWidget, create_page_title, load_product_pixmap
-from components.product_card import format_money
 from database import DatabaseError
-from services.order_draft import DraftItem
+from frames.common import HeaderWidget, create_page_title, load_product_pixmap
+from frames.order_draft import DraftItem
+from frames.product_card import format_money
 
 
 class ProductDetailFrame(QFrame):
@@ -113,9 +114,20 @@ class ProductDetailFrame(QFrame):
         self.size_combo.currentIndexChanged.connect(self._update_quantity_limit)
         row.addWidget(self.size_combo)
         row.addWidget(QLabel("Количество"))
+        decrease_button = QPushButton("−", objectName="quantity_button")
+        decrease_button.setToolTip("Уменьшить количество")
+        decrease_button.clicked.connect(self.quantity_spin_step_down)
+        row.addWidget(decrease_button)
         self.quantity_spin = QSpinBox()
         self.quantity_spin.setMinimum(1)
+        self.quantity_spin.setButtonSymbols(QAbstractSpinBox.ButtonSymbols.NoButtons)
+        self.quantity_spin.setFixedWidth(70)
+        self.quantity_spin.setAlignment(Qt.AlignmentFlag.AlignCenter)
         row.addWidget(self.quantity_spin)
+        increase_button = QPushButton("+", objectName="quantity_button")
+        increase_button.setToolTip("Увеличить количество")
+        increase_button.clicked.connect(self.quantity_spin_step_up)
+        row.addWidget(increase_button)
         add_button = QPushButton("Добавить в заказ")
         add_button.clicked.connect(self.add_to_order)
         add_button.setEnabled(bool(available))
@@ -124,6 +136,12 @@ class ProductDetailFrame(QFrame):
         layout.addLayout(row)
         self._update_quantity_limit()
         return layout
+
+    def quantity_spin_step_down(self) -> None:
+        self.quantity_spin.stepDown()
+
+    def quantity_spin_step_up(self) -> None:
+        self.quantity_spin.stepUp()
 
     def _update_quantity_limit(self, *_):
         if not hasattr(self, "quantity_spin"):

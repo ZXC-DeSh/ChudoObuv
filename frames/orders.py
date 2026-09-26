@@ -12,9 +12,9 @@ from PySide6.QtWidgets import (
 )
 
 import messages
-from components import HeaderWidget, create_page_title
-from components.product_card import format_money
 from database import DatabaseError
+from frames.common import HeaderWidget, create_page_title
+from frames.product_card import format_money
 
 
 class OrdersFrame(QFrame):

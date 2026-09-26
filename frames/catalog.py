@@ -13,8 +13,9 @@ from PySide6.QtWidgets import (
 )
 
 import messages
-from components import HeaderWidget, ProductCard, create_page_title
 from database import DatabaseError
+from frames.common import HeaderWidget, create_page_title
+from frames.product_card import ProductCard
 
 
 class CatalogFrame(QFrame):

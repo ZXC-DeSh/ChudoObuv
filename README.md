@@ -58,7 +58,7 @@ python app.py
 
 ## Данные и повторный импорт
 
-Исходные таблицы TASK2 сохранены в `resources/import`. Проверить их без изменения базы:
+Исходные таблицы TASK2 сохранены в `database/resources/import`. Проверить их без изменения базы:
 
 ```powershell
 python -m database.import_data
@@ -76,23 +76,16 @@ python -m database.import_data --apply
 
 ```text
 app.py                     точка входа и навигация QStackedWidget
-components/                общие виджеты и карточка товара
-database/                  конфигурация, PostgreSQL-запросы, схема и импорт
-forms/                     таблица позиций заказа
-frames/                    экраны входа, каталога, товара и заказов
-services/                  скидка, черновик заказа и подготовка данных TASK2
-storage/                   текущая сессия и ролевая модель
-resources/                 изображения, логотип, иконка и исходные Excel-файлы
+database/                  конфигурация, схема, запросы, импорт и resources
+database/resources/        изображения, логотип, иконка и исходные Excel-файлы
+frames/                    экраны и связанная с ними прикладная логика
+session.py                 текущая сессия и ролевая модель
 scripts/                   генераторы database.sql и ER_Diagram.pdf
 tests/                     модульные тесты и UI smoke-тесты
 database.sql               готовая структура PostgreSQL с данными
 ER_Diagram.pdf             ER-диаграмма нормализованной базы
+TASK2_COMPLIANCE.md        итоговая таблица соответствия требованиям
 ```
-папку components, services и forms убрать, а файлы с них отправить в логику папки frames.
-storage убрать папку и оставить только файл с неё для работы сессий.
-папку resources убрать в папку database
-
-
 
 ## Модель данных
 
@@ -102,9 +95,15 @@ storage убрать папку и оставить только файл с н�
 
 ## Проверка
 
+```powershell
+python -m unittest discover -s tests -v
+python -m compileall -q .
+```
+
 Для проверки входных Excel-файлов без подключения к PostgreSQL:
 
 ```powershell
 python -m database.import_data
 ```
 
+Подробный аудит требований находится в `TASK2_COMPLIANCE.md`.

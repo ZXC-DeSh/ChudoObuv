@@ -7,7 +7,7 @@ from pathlib import Path
 import psycopg
 
 from database.config import DatabaseSettings
-from services.importer import generate_database_sql, prepare_task2_data
+from frames.importer import generate_database_sql, prepare_task2_data
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -18,7 +18,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         "--resources",
         type=Path,
-        default=PROJECT_ROOT / "resources" / "import",
+        default=PROJECT_ROOT / "database" / "resources" / "import",
         help="Каталог с пятью файлами *_import.xlsx.",
     )
     parser.add_argument(

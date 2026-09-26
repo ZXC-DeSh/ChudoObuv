@@ -5,8 +5,8 @@ from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QFrame, QLabel, QLineEdit, QPushButton, QVBoxLayout
 
 import messages
-from components.common import RESOURCES_DIR, create_page_title
 from database import DatabaseError
+from frames.common import RESOURCES_DIR, create_page_title
 
 
 class LoginFrame(QFrame):

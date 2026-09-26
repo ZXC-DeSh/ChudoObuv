@@ -10,7 +10,7 @@ import psycopg
 from psycopg.rows import dict_row
 
 from database.config import DatabaseSettings
-from services.pricing import previous_calendar_month
+from frames.pricing import previous_calendar_month
 
 
 class DatabaseError(RuntimeError):

@@ -47,6 +47,14 @@ QPushButton#secondary_button {
     background-color: #D2F6E7;
 }
 
+QPushButton#quantity_button {
+    min-width: 36px;
+    max-width: 36px;
+    padding: 7px 4px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
 QLineEdit, QComboBox, QSpinBox, QDateEdit {
     background-color: #FFFFFF;
     border: 1px solid #70B2AF;

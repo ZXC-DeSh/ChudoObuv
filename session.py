@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from services.order_draft import OrderDraft
+from frames.order_draft import OrderDraft
 
 
 AUTHORIZED_ROLE = "Авторизованный пользователь"
