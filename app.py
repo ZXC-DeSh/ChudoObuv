@@ -27,7 +27,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 class MainWindow(QMainWindow):
     def __init__(self, database: DatabaseConnection | None = None):
         super().__init__()
-        self.setWindowTitle("Чудо Обувь — система оформления заказов")
+        self.setWindowTitle("Чудо Сумки")
         self.setMinimumSize(1050, 760)
         self.resize(1280, 850)
         self.database = database or DatabaseConnection()
