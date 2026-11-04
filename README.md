@@ -103,4 +103,4 @@ python -m database.import_data
 
 Подробный аудит требований находится в `TASK2_COMPLIANCE.md`.
 
-графы это круто
+![Er-диаграмма](database\resources\Untitled.png)

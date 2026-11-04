@@ -3,7 +3,7 @@ from __future__ import annotations
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QHeaderView, QPushButton, QTableWidget, QTableWidgetItem
 
-from components.product_card import format_money
+from frames.product_card import format_money
 
 
 class DraftItemsTable(QTableWidget):
