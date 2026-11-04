@@ -103,4 +103,10 @@ python -m database.import_data
 
 Подробный аудит требований находится в `TASK2_COMPLIANCE.md`.
 
-![Er-диаграмма](database\resources\Untitled.png)
+## ER-диаграмма
+
+<p align="center">
+  <img src="database/resources/Untitled.png" alt="ER-диаграмма" width="800">
+  <br>
+  <em>Нормализованная модель: users, products, sizes, stock_items, orders, order_items</em>
+</p>
