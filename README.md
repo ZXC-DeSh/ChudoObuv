@@ -95,11 +95,6 @@ TASK2_COMPLIANCE.md        итоговая таблица соответств�
 
 ## Проверка
 
-```powershell
-python -m unittest discover -s tests -v
-python -m compileall -q .
-```
-
 Для проверки входных Excel-файлов без подключения к PostgreSQL:
 
 ```powershell

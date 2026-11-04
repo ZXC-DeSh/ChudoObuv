@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setWindowTitle("Чудо Сумки")
         self.setMinimumSize(1050, 760)
-        self.resize(1280, 850)
+        self.resize(1260, 850)
         self.database = database or DatabaseConnection()
         self.session = AppSession()
         self.stack = QStackedWidget()
