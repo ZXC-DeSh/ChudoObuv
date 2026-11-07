@@ -110,3 +110,112 @@ python -m database.import_data
   <br>
   <em>Нормализованная модель: users, products, sizes, stock_items, orders, order_items</em>
 </p>
+
+## Запуск PostgreSQL через Docker Compose (практическая работа № 12)
+
+Для проекта используется PostgreSQL 14 в контейнере. Графическое приложение
+PySide6 по-прежнему запускается непосредственно в Windows, а не внутри Docker.
+Вспомогательный контейнер `db-check` проверяет подключение к PostgreSQL.
+
+### Предварительные требования
+
+- Docker Desktop запущен в режиме Linux containers;
+- доступны Docker Engine и Docker Compose v2;
+- установлен Python 3.11+ для запуска настольного приложения и импорта Excel.
+
+### Настройка переменных окружения
+
+Скопируйте пример и укажите собственный локальный пароль в обеих переменных
+пароля:
+
+```powershell
+Copy-Item .env.example .env
+notepad .env
+```
+
+Файл `.env` исключён из Git. Не публикуйте его содержимое и не добавляйте пароль
+в Dockerfile или `compose.yaml`.
+
+### Сборка и запуск контейнеров
+
+Команды выполняются из корня проекта:
+
+```powershell
+docker --version
+docker compose version
+docker info --format '{{.OSType}}'
+docker compose config --quiet
+docker build -t chudo-obuv-db-check:1.0 ./docker/db-check
+docker image ls chudo-obuv-db-check
+docker compose up --build -d
+docker compose ps
+docker compose logs --tail=40 db
+docker compose logs --tail=40 db-check
+docker compose run --rm db-check
+```
+
+Ожидается, что `db` будет иметь состояние `healthy`, а одноразовая проверка
+`db-check` завершится с кодом 0 и выведет имя базы и число таблиц. Для
+`db-check` адрес PostgreSQL — `db:5432`: это внутреннее имя сервиса в сети
+Compose.
+
+### Загрузка структуры и данных проекта
+
+В отличие от учебного примера с `shoe_store.sql`, данный проект хранит структуру
+в `database/schema.sql`, а исходные данные — в пяти Excel-файлах каталога
+`database/resources/import`. Поэтому загрузка выполняется штатным импортёром
+проекта, а не командой `psql -f`:
+
+```powershell
+python -m pip install -r requirements.txt
+python -m database.import_data
+python -m database.import_data --apply
+docker compose run --rm db-check
+```
+
+ВНИМАНИЕ: параметр `--apply` пересоздаёт таблицы и загружает набор данных.
+Используйте его только для новой учебной базы или после резервного копирования
+нужных данных. Не запускайте повторно без необходимости.
+
+### Подключение настольного приложения
+
+Приложение запускается на Windows:
+
+```powershell
+python app.py
+```
+
+В `.env` для приложения указаны `CHUDO_DB_HOST=127.0.0.1` и
+`CHUDO_DB_PORT=5433`. Это опубликованный порт Windows. Внутри контейнерной
+сети используется `db:5432`. Если порт 5433 занят, измените
+`POSTGRES_HOST_PORT` и `CHUDO_DB_PORT` на одинаковое свободное значение.
+
+### Проверка и остановка
+
+Проверьте запуск окна, отображение каталога, названий товаров, цен и остатков.
+Затем выполните:
+
+```powershell
+docker compose exec db pg_isready -U postgres -d chudo_obuv
+docker compose stop
+docker compose start
+docker compose run --rm db-check
+```
+
+В этой практической работе постоянный именованный том намеренно не настроен:
+гарантированное сохранение данных при пересоздании контейнера относится к
+следующей практической работе. Не используйте `docker compose down -v`, если
+нужно сохранить текущие данные.
+
+### Диагностика связи сервисов
+
+Для учебной проверки временно измените `DB_HOST: db` на `DB_HOST: wrong-db`
+в `compose.yaml`, затем выполните:
+
+```powershell
+docker compose run --rm db-check
+```
+
+Проверка должна завершиться ошибкой разрешения имени/подключения. После этого
+верните `DB_HOST: db` и повторите запуск `docker compose run --rm db-check`.
+Журналы доступны командой `docker compose logs --tail=30 db-check`.

@@ -1,0 +1,10 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+.env
+config.ini
+build
+dist
+.pytest_cache

@@ -2,6 +2,12 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+# Загружаем локальные настройки проекта; сам .env не включается в Git.
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 
 
 @dataclass(frozen=True)
@@ -19,7 +25,7 @@ class DatabaseSettings:
             port=int(os.getenv("CHUDO_DB_PORT", "5432")),
             database=os.getenv("CHUDO_DB_NAME", "chudo_obuv"),
             user=os.getenv("CHUDO_DB_USER", "postgres"),
-            password=os.getenv("CHUDO_DB_PASSWORD", "67909141"),
+            password=os.getenv("CHUDO_DB_PASSWORD", ""),
         )
 
     def connection_parameters(self) -> dict:
