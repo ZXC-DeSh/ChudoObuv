@@ -111,7 +111,7 @@ python -m database.import_data
   <em>Нормализованная модель: users, products, sizes, stock_items, orders, order_items</em>
 </p>
 
-## Запуск PostgreSQL через Docker Compose (практическая работа № 12)
+## Запуск PostgreSQL через Docker Compose
 
 Для проекта используется PostgreSQL 14 в контейнере. Графическое приложение
 PySide6 по-прежнему запускается непосредственно в Windows, а не внутри Docker.
