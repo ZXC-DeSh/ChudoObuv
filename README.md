@@ -219,3 +219,196 @@ docker compose run --rm db-check
 Проверка должна завершиться ошибкой разрешения имени/подключения. После этого
 верните `DB_HOST: db` и повторите запуск `docker compose run --rm db-check`.
 Журналы доступны командой `docker compose logs --tail=30 db-check`.
+
+
+## Постоянное хранение и сети
+
+### 1. Постоянное хранение данных PostgreSQL
+
+Для хранения данных PostgreSQL используется именованный Docker-том `db_data`, который подключается к каталогу `/var/lib/postgresql/data` внутри контейнера.
+
+```yaml
+volumes:
+  - db_data:/var/lib/postgresql/data
+```
+
+Объявление тома в конце `compose.yaml`:
+
+```yaml
+volumes:
+  db_data:
+```
+
+Docker Compose автоматически создаёт именованный том `chudoobuv_db_data`.
+
+**Назначение тома:** данные базы PostgreSQL сохраняются независимо от пересоздания и удаления контейнера. Благодаря этому таблицы, записи и другие данные не теряются при обычном перезапуске или пересоздании контейнера.
+
+### 2. Создание резервной копии
+
+Перед изменением конфигурации или выполнением операций с базой рекомендуется создавать резервную копию.
+
+Создание каталога для резервных копий:
+
+```powershell
+New-Item -ItemType Directory -Force -Path backups
+```
+
+Создание SQL-дампа PostgreSQL:
+
+```powershell
+docker compose exec db pg_dump -U postgres -d chudo_obuv -f /tmp/chudo_obuv_backup.sql
+```
+
+Копирование резервной копии из контейнера на компьютер:
+
+```powershell
+docker compose cp db:/tmp/chudo_obuv_backup.sql ./backups/chudo_obuv_backup.sql
+```
+
+Проверка наличия файла:
+
+```powershell
+Get-Item .\backups\chudo_obuv_backup.sql
+```
+
+Резервные копии хранятся локально в каталоге `backups/`. Этот каталог исключён из Git.
+
+### 3. Восстановление базы данных
+
+Для восстановления SQL-дампа сначала необходимо скопировать файл резервной копии в контейнер PostgreSQL:
+
+```powershell
+docker compose cp .\backups\chudo_obuv_backup.sql db:/tmp/restore.sql
+```
+
+Затем выполнить восстановление:
+
+```powershell
+docker compose exec db psql -v ON_ERROR_STOP=1 -U postgres -d chudo_obuv -f /tmp/restore.sql
+```
+
+Параметр `ON_ERROR_STOP=1` останавливает выполнение при возникновении ошибки SQL.
+
+**Важно:** восстановление следует выполнять в подготовленную базу данных. При восстановлении в уже заполненную базу возможны конфликты существующих таблиц и записей. Перед восстановлением необходимо сохранить текущие данные.
+
+### 4. Запуск и проверка контейнеров
+
+Проверка конфигурации Docker Compose:
+
+```powershell
+docker compose config --quiet
+```
+
+Сборка и запуск сервисов:
+
+```powershell
+docker compose up -d --build
+```
+
+Просмотр состояния контейнеров:
+
+```powershell
+docker compose ps
+```
+
+Просмотр журналов PostgreSQL:
+
+```powershell
+docker compose logs db
+```
+
+Проверка подключения к базе данных через диагностический сервис:
+
+```powershell
+docker compose run --rm db-check
+```
+
+Остановка контейнеров:
+
+```powershell
+docker compose down
+```
+
+Обычная команда `docker compose down` удаляет контейнеры и сеть проекта, но сохраняет именованные тома.
+
+### 5. Сетевое взаимодействие
+
+Для взаимодействия контейнеров используется пользовательская Docker-сеть `shoe-backend` с драйвером `bridge`.
+
+Внутри Docker-сети PostgreSQL доступен по следующим параметрам:
+
+| Параметр | Значение |
+|---|---|
+| Имя сервиса | `db` |
+| Внутренний адрес | `db` |
+| Внутренний порт | `5432` |
+| Сеть | `shoe-backend` |
+| Драйвер | `bridge` |
+
+Диагностический сервис `db-check` подключается к PostgreSQL по адресу `db:5432`.
+
+Настройки подключения Windows-приложения:
+
+| Параметр | Значение |
+|---|---|
+| `CHUDO_DB_HOST` | `127.0.0.1` |
+| `CHUDO_DB_PORT` | `5433` |
+| `CHUDO_DB_NAME` | `chudo_obuv` |
+| `CHUDO_DB_USER` | `postgres` |
+
+Порт PostgreSQL публикуется только на локальном интерфейсе компьютера:
+
+```yaml
+ports:
+  - "127.0.0.1:${POSTGRES_HOST_PORT:-5433}:5432"
+```
+
+Таким образом, Windows-приложение подключается к базе через `127.0.0.1:5433`, а контейнеры взаимодействуют между собой через внутреннюю Docker-сеть по адресу `db:5432`.
+
+### 6. Проверка Docker-сети и томов
+
+Список Docker-сетей:
+
+```powershell
+docker network ls
+```
+
+Информация о пользовательской сети:
+
+```powershell
+docker network inspect chudoobuv_shoe-backend
+```
+
+Список Docker-томов:
+
+```powershell
+docker volume ls
+```
+
+Проверка опубликованного порта PostgreSQL:
+
+```powershell
+docker compose port db 5432
+```
+
+Ожидаемый результат:
+
+```text
+127.0.0.1:5433
+```
+
+### 7. Важное предупреждение о данных
+
+**Не используйте команду `docker compose down -v` без необходимости.**
+
+Ключ `-v` удаляет именованные тома, подключённые к сервисам Compose. В результате может быть удалён том `chudoobuv_db_data` вместе со всеми данными PostgreSQL.
+
+Для обычной остановки проекта используйте:
+
+```powershell
+docker compose down
+```
+
+Перед опасными операциями обязательно создавайте резервную копию базы данных и проверяйте её наличие.
+
+Файлы `.env` и `backups/` должны оставаться исключёнными из Git, чтобы не публиковать конфиденциальные настройки и резервные копии.
