@@ -8,3 +8,5 @@ venv/
 work/
 tmp/
 backups/
+/build/
+/dist/

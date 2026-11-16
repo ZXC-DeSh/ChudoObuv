@@ -1,13 +1,21 @@
 from __future__ import annotations
 
 import os
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Загружаем локальные настройки проекта; сам .env не включается в Git.
-load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+
+if getattr(sys, "frozen", False):
+    # При запуске EXE ищем .env рядом с исполняемым файлом.
+    BASE_DIR = Path(sys.executable).resolve().parent
+else:
+    # При обычном запуске используем корень проекта.
+    BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / ".env")
 
 
 @dataclass(frozen=True)
